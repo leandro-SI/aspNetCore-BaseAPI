@@ -28,13 +28,15 @@ namespace BaseAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<BaseContext>(opts => opts.UseSqlServer(Configuration.GetConnectionString("BaseConnection")));
+            services.AddDbContext<BaseContext>(opts => opts.UseLazyLoadingProxies().UseSqlServer(Configuration.GetConnectionString("BaseConnection")));
             services.AddControllers();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "BaseAPI", Version = "v1" });
             });
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

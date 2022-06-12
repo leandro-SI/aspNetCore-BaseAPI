@@ -14,6 +14,11 @@ namespace BaseAPI.Data
 
         }
 
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+
+        }
+
         public DbSet<Pessoa> Pessoas { get; set; }
     }
 }

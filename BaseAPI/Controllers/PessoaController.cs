@@ -2,6 +2,8 @@
 using BaseAPI.Data;
 using BaseAPI.Data.Dtos.PessoaDto;
 using BaseAPI.Models;
+using BaseAPI.Services;
+using FluentResults;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -14,23 +16,17 @@ namespace BaseAPI.Controllers
     [Route("[controller]")]
     public class PessoaController : ControllerBase
     {
-        private readonly BaseContext _context;
-        private readonly IMapper _mapper;
+        private readonly PessoaService _pessoaService;
 
-        public PessoaController(BaseContext context, IMapper mapper)
+        public PessoaController(PessoaService pessoaService)
         {
-            _context = context;
-            _mapper = mapper;
+            _pessoaService = pessoaService;
         }
 
         [HttpPost]
         public IActionResult AdicionarPessoa([FromBody] CreatePessoaDto pessoaDto)
         {
-
-            var pessoa = _mapper.Map<Pessoa>(pessoaDto);
-
-            _context.Pessoas.Add(pessoa);
-            _context.SaveChanges();
+            var pessoa = _pessoaService.CreatePessoa(pessoaDto);
 
             return CreatedAtAction(nameof(RecuperarPessoaPorId), new { Id = pessoa.Id }, pessoa);
         }
@@ -38,35 +34,29 @@ namespace BaseAPI.Controllers
         [HttpGet]
         public IActionResult RecuperarPessoas()
         {
-            return Ok(_context.Pessoas);
+            var pessoas = _pessoaService.ReadPessoa();
+
+            if (pessoas == null) return NotFound();
+
+            return Ok(pessoas); 
         }
 
         [HttpGet("{id}")]
         public IActionResult RecuperarPessoaPorId(int id)
         {
-            Pessoa pessoa = _context.Pessoas.FirstOrDefault(filme => filme.Id == id);
+            var pessoa = _pessoaService.ReadPessoaforId(id);
 
-            if (pessoa != null)
-            {
-                var pessoaDto = _mapper.Map<ReadPessoaDto>(pessoa);
+            if (pessoa == null) return NotFound();
 
-                return Ok(pessoaDto);
-
-            }
-
-            return NotFound();
+            return Ok(pessoa);
         }
 
         [HttpPut("{id}")]
         public IActionResult AtualizarPessoa([FromBody] UpdatePessoaDto pessoaDto, int id)
         {
-            var pessoa = _context.Pessoas.FirstOrDefault(p => p.Id == id);
+            Result resultado = _pessoaService.UpdatePessoa(pessoaDto, id);
 
-            if (pessoa == null) return NotFound();
-
-            _mapper.Map(pessoaDto, pessoa);
-
-            _context.SaveChanges();
+            if (resultado.IsFailed) return NotFound();
 
             return NoContent();
         }
@@ -74,11 +64,9 @@ namespace BaseAPI.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeletarPessoa(int id)
         {
-            var pessoa = _context.Pessoas.FirstOrDefault(p => p.Id == id);
+            Result resultado = _pessoaService.DeletePessoa(id);
 
-            if (pessoa == null) return NotFound();
-            _context.Remove(pessoa);
-            _context.SaveChanges();
+            if (resultado.IsFailed) return NotFound();
 
             return NoContent();
         }
