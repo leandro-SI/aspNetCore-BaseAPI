@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ControleUsuario.Data.Dtos.UsuarioDto;
 using ControleUsuario.Models;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace ControleUsuario.Profiles
         public UsuarioProfile()
         {
             CreateMap<CreateUsuarioDto, Usuario>();
+            CreateMap<Usuario, IdentityUser<int>>();
         }
     }
 }
