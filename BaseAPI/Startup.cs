@@ -30,6 +30,7 @@ namespace BaseAPI
         {
             services.AddDbContext<BaseContext>(opts => opts.UseSqlServer(Configuration.GetConnectionString("BaseConnection")));
             services.AddControllers();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "BaseAPI", Version = "v1" });

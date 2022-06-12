@@ -1,4 +1,6 @@
-﻿using BaseAPI.Data;
+﻿using AutoMapper;
+using BaseAPI.Data;
+using BaseAPI.Data.Dtos.PessoaDto;
 using BaseAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -13,15 +15,20 @@ namespace BaseAPI.Controllers
     public class PessoaController : ControllerBase
     {
         private readonly BaseContext _context;
+        private readonly IMapper _mapper;
 
-        public PessoaController(BaseContext context)
+        public PessoaController(BaseContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         [HttpPost]
-        public IActionResult AdicionarPessoa([FromBody] Pessoa pessoa)
+        public IActionResult AdicionarPessoa([FromBody] CreatePessoaDto pessoaDto)
         {
+
+            var pessoa = _mapper.Map<Pessoa>(pessoaDto);
+
             _context.Pessoas.Add(pessoa);
             _context.SaveChanges();
 
@@ -39,21 +46,25 @@ namespace BaseAPI.Controllers
         {
             Pessoa pessoa = _context.Pessoas.FirstOrDefault(filme => filme.Id == id);
 
-            if (pessoa != null) return Ok(pessoa);
+            if (pessoa != null)
+            {
+                var pessoaDto = _mapper.Map<ReadPessoaDto>(pessoa);
+
+                return Ok(pessoaDto);
+
+            }
 
             return NotFound();
         }
 
         [HttpPut("{id}")]
-        public IActionResult AtualizarPessoa([FromBody] Pessoa pessoaRequest, int id)
+        public IActionResult AtualizarPessoa([FromBody] UpdatePessoaDto pessoaDto, int id)
         {
             var pessoa = _context.Pessoas.FirstOrDefault(p => p.Id == id);
 
             if (pessoa == null) return NotFound();
 
-            pessoa.Nome = pessoaRequest.Nome;
-            pessoa.Sobrenome = pessoaRequest.Sobrenome;
-            pessoa.Idade = pessoaRequest.Idade;
+            _mapper.Map(pessoaDto, pessoa);
 
             _context.SaveChanges();
 
