@@ -8,10 +8,12 @@ namespace BaseAPI.Models
 {
     public class Pessoa
     {
+        [Key]
+        [Required]
+        public int Id { get; set; }
         [Required(ErrorMessage = "O campo nome é obrigatório")]
         public string Nome { get; set; }
         public string Sobrenome { get; set; }
-
         public int Idade { get; set; }
     }
 }
