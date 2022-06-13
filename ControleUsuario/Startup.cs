@@ -40,6 +40,7 @@ namespace ControleUsuario
             services.AddScoped<CadastroService, CadastroService>();
             services.AddScoped<LoginService, LoginService>();
             services.AddScoped<TokenService, TokenService>();
+            services.AddScoped<LogoutService, LogoutService>();
 
             //services.AddSwaggerGen(c =>
             //{
