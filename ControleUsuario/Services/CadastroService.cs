@@ -29,7 +29,11 @@ namespace ControleUsuario.Services
 
             Task<IdentityResult> identityResult = _userManager.CreateAsync(usuarioIdentity, usuarioDto.Password);
 
-            if (identityResult.Result.Succeeded) return Result.Ok();
+            if (identityResult.Result.Succeeded)
+            {
+                var code = _userManager.GenerateEmailConfirmationTokenAsync(usuarioIdentity);
+                return Result.Ok().WithSuccess(code.Result);
+            } 
 
             return Result.Fail("Falha ao cadastrar usuário.!");
         }

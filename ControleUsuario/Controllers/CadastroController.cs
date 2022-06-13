@@ -27,7 +27,7 @@ namespace ControleUsuario.Controllers
 
             if (result.IsFailed) return StatusCode(500);
 
-            return Ok();
+            return Ok(result.Successes);
         }
     }
 }
