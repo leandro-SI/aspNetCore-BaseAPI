@@ -63,7 +63,7 @@ namespace BaseAPI.Services
 
             if (pessoa == null) return Result.Fail("Pessoa não encontrada");
 
-            _context.Pessoas.Remove(pessoa)                ;
+            _context.Pessoas.Remove(pessoa);
             _context.SaveChanges();
 
             return Result.Ok();

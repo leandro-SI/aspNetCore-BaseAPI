@@ -1,4 +1,5 @@
 using BaseAPI.Data;
+using BaseAPI.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -31,6 +32,7 @@ namespace BaseAPI
             services.AddDbContext<BaseContext>(opts => opts.UseLazyLoadingProxies().UseSqlServer(Configuration.GetConnectionString("BaseConnection")));
             services.AddControllers();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddScoped<PessoaService, PessoaService>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "BaseAPI", Version = "v1" });
