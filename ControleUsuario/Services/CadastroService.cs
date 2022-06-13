@@ -15,11 +15,13 @@ namespace ControleUsuario.Services
     {
         private readonly IMapper _mapper;
         private readonly UserManager<IdentityUser<int>> _userManager;
+        private readonly EmailService _emailService;
 
-        public CadastroService(IMapper mapper, UserManager<IdentityUser<int>> userManager)
+        public CadastroService(IMapper mapper, UserManager<IdentityUser<int>> userManager, EmailService emailService)
         {
             _mapper = mapper;
             _userManager = userManager;
+            _emailService = emailService;
         }
 
         public Result CadastroUsuario(CreateUsuarioDto usuarioDto)
@@ -32,8 +34,11 @@ namespace ControleUsuario.Services
 
             if (identityResult.Result.Succeeded)
             {
-                var code = _userManager.GenerateEmailConfirmationTokenAsync(usuarioIdentity);
-                return Result.Ok().WithSuccess(code.Result);
+                var code = _userManager.GenerateEmailConfirmationTokenAsync(usuarioIdentity).Result;
+                _emailService.EnviarEmail(new[] { usuarioIdentity.Email }, 
+                    "Link de Ativação", usuarioIdentity.Id, code);
+
+                return Result.Ok().WithSuccess(code);
             } 
 
             return Result.Fail("Falha ao cadastrar usuário.!");
