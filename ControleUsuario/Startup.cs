@@ -38,6 +38,7 @@ namespace ControleUsuario
             services.AddIdentity<IdentityUser<int>, IdentityRole<int>>()
                 .AddEntityFrameworkStores<UserDbContext>();
             services.AddScoped<CadastroService, CadastroService>();
+            services.AddScoped<LoginService, LoginService>();
 
             //services.AddSwaggerGen(c =>
             //{
