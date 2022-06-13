@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ControleUsuario.Data.Dtos.UsuarioDto;
+using ControleUsuario.Data.Requests;
 using ControleUsuario.Models;
 using FluentResults;
 using Microsoft.AspNetCore.Identity;
@@ -36,6 +37,22 @@ namespace ControleUsuario.Services
             } 
 
             return Result.Fail("Falha ao cadastrar usuário.!");
+        }
+
+        public Result AtivaContaUsuario(AtivaContaRequest request)
+        {
+            var identityUser = _userManager
+                .Users
+                .FirstOrDefault(u => u.Id == request.UsuarioId);
+
+            var identityResult = _userManager.ConfirmEmailAsync(identityUser, request.CodigoDeAtivacao).Result;
+
+            if (identityResult.Succeeded)
+            {
+                return Result.Ok();
+            }
+
+            return Result.Fail("Falha ao ativar conta de usuário.!");
         }
     }
 }

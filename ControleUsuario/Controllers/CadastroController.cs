@@ -1,4 +1,5 @@
 ﻿using ControleUsuario.Data.Dtos.UsuarioDto;
+using ControleUsuario.Data.Requests;
 using ControleUsuario.Services;
 using FluentResults;
 using Microsoft.AspNetCore.Mvc;
@@ -28,6 +29,16 @@ namespace ControleUsuario.Controllers
             if (result.IsFailed) return StatusCode(500);
 
             return Ok(result.Successes);
+        }
+
+        [HttpPost("/ativa")]
+        public IActionResult AtivarContaUsuario(AtivaContaRequest request)
+        {
+            Result resultado = _cadastroService.AtivaContaUsuario(request);
+
+            if (resultado.IsFailed) return StatusCode(500);
+
+            return Ok(resultado.Successes);
         }
     }
 }
