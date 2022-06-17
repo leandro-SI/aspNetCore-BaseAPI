@@ -1,5 +1,6 @@
 ﻿using ControleUsuario.Models;
 using MailKit.Net.Smtp;
+using Microsoft.Extensions.Configuration;
 using MimeKit;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,13 @@ namespace ControleUsuario.Services
 {
     public class EmailService
     {
+        private IConfiguration _configuration;
+
+        public EmailService(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         public void EnviarEmail(string[] destinatario, string assunto, int usuarioId, string code)
         {
             Mensagem mensagem = new Mensagem(destinatario, assunto, usuarioId, code);
@@ -20,20 +28,26 @@ namespace ControleUsuario.Services
 
         }
 
-        private MimeMessage Enviar(MimeMessage mensagemDeEmail)
+        private void Enviar(MimeMessage mensagemDeEmail)
         {
             using(var client = new SmtpClient())
             {
                 try
                 {
-                    client.Connect("Conexão a fazer!");
-                    //TODO Auth de e-mail
+                    client.Connect(_configuration.GetValue<string>("EmailSettings:SmtpServer"),
+                        _configuration.GetValue<int>("EmailSettings:Port"), false);
+
+                    client.AuthenticationMechanisms.Remove("XOUATH2");
+
+                    client.Authenticate(_configuration.GetValue<string>("EmailSettings:From"),
+                        _configuration.GetValue<string>("EmailSettings:Password"));
+
                     client.Send(mensagemDeEmail);
                 }
-                catch (Exception)
+                catch (Exception error)
                 {
 
-                    throw;
+                    throw new Exception(error.Message);
                 }
                 finally
                 {
@@ -43,10 +57,10 @@ namespace ControleUsuario.Services
             }
         }
 
-        private object CreateCorpoEmail(Mensagem mensagem)
+        private MimeMessage CreateCorpoEmail(Mensagem mensagem)
         {
             var mensagemDeEmail = new MimeMessage();
-            mensagemDeEmail.From.Add(new MailboxAddress("ADICIONAR O REMETENDE"));
+            mensagemDeEmail.From.Add(new MailboxAddress(_configuration.GetValue<string>("EmailSettings:From")));
             mensagemDeEmail.To.AddRange(mensagem.Destinatario);
             mensagemDeEmail.Subject = mensagem.Assunto;
             mensagemDeEmail.Body = new TextPart(MimeKit.Text.TextFormat.Text)

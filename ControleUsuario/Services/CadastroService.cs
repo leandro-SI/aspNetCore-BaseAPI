@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace ControleUsuario.Services
 {
@@ -35,8 +36,11 @@ namespace ControleUsuario.Services
             if (identityResult.Result.Succeeded)
             {
                 var code = _userManager.GenerateEmailConfirmationTokenAsync(usuarioIdentity).Result;
-                _emailService.EnviarEmail(new[] { usuarioIdentity.Email }, 
-                    "Link de Ativação", usuarioIdentity.Id, code);
+
+                // Corrigir E-mail
+                //var encodedCode = HttpUtility.UrlEncode(code);
+                //_emailService.EnviarEmail(new[] { usuarioIdentity.Email },
+                //    "Link de Ativação", usuarioIdentity.Id, encodedCode);
 
                 return Result.Ok().WithSuccess(code);
             } 
