@@ -39,5 +39,23 @@ namespace ControleUsuario.Services
 
             return Result.Fail("Login Falhou");
         }
+
+        public Result SolicitaResetSenhaUsuario(SolicitaResetRequest request)
+        {
+            IdentityUser<int> identityUser = _signInManager
+                .UserManager
+                .Users
+                .FirstOrDefault(u => u.NormalizedEmail == request.Email.ToUpper());
+
+            if (identityUser != null)
+            {
+                string codigoRecuperacao = _signInManager
+                    .UserManager
+                    .GeneratePasswordResetTokenAsync(identityUser).Result;
+                return Result.Ok().WithSuccess(codigoRecuperacao);
+            }
+
+            return Result.Fail("falha ao solicitar redefinição");
+        }
     }
 }
