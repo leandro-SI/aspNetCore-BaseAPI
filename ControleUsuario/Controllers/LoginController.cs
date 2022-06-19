@@ -40,5 +40,15 @@ namespace ControleUsuario.Controllers
             return Ok(resultado.Successes);
         }
 
+        [HttpPost("/efeturar-reset")]
+        public IActionResult ResetarSenhaUsuario(EfetuarResetRequest request)
+        {
+            Result resultado = _loginService.ResetarSenhaUsuario(request);
+
+            if (resultado.IsFailed) return Unauthorized(resultado.Errors);
+
+            return Ok(resultado.Successes);
+        }
+
     }
 }
