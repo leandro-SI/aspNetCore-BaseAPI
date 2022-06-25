@@ -4,6 +4,7 @@ using BaseAPI.Data.Dtos.PessoaDto;
 using BaseAPI.Models;
 using BaseAPI.Services;
 using FluentResults;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -32,6 +33,7 @@ namespace BaseAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "admin")]
         public IActionResult RecuperarPessoas()
         {
             var pessoas = _pessoaService.ReadPessoa();
