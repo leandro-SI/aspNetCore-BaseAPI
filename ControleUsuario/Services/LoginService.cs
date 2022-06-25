@@ -32,7 +32,8 @@ namespace ControleUsuario.Services
                     .Users
                     .FirstOrDefault(u => u.NormalizedUserName == request.UserName.ToUpper());
 
-                Token token = _tokenService.CreateToken(identityUser);
+                Token token = _tokenService.CreateToken(identityUser, 
+                    _signInManager.UserManager.GetRolesAsync(identityUser).Result.FirstOrDefault());
 
                 return Result.Ok().WithSuccess(token.Value);
             }

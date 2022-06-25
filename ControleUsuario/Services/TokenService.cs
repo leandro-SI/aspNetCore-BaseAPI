@@ -13,12 +13,13 @@ namespace ControleUsuario.Services
 {
     public class TokenService
     {
-        public Token CreateToken(IdentityUser<int> user)
+        public Token CreateToken(IdentityUser<int> user, string role)
         {
             Claim[] direitosUser = new Claim[]
             {
                 new Claim("username", user.UserName),
-                new Claim("id", user.Id.ToString())
+                new Claim("id", user.Id.ToString()),
+                new Claim(ClaimTypes.Role, role)
             };
 
             var chave = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("lfli803nvnkw9302"));

@@ -33,6 +33,7 @@ namespace ControleUsuario
             services.AddDbContext<UserDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("ControleUsuarioConnection"))
             );
+            services.AddTransient<UserDbContext>();
             services.AddControllers();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddIdentity<IdentityUser<int>, IdentityRole<int>>(
