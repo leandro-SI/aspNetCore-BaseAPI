@@ -25,6 +25,7 @@ namespace BaseAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public IActionResult AdicionarPessoa([FromBody] CreatePessoaDto pessoaDto)
         {
             var pessoa = _pessoaService.CreatePessoa(pessoaDto);
@@ -33,7 +34,7 @@ namespace BaseAPI.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin, regular")]
         public IActionResult RecuperarPessoas()
         {
             var pessoas = _pessoaService.ReadPessoa();

@@ -35,10 +35,9 @@ namespace ControleUsuario.Services
 
             Task<IdentityResult> identityResult = _userManager.CreateAsync(usuarioIdentity, usuarioDto.Password);
 
-            var createRoleResult = _roleManager.CreateAsync(new IdentityRole<int>("admin")).Result;
+            // var createRoleResult = _roleManager.CreateAsync(new IdentityRole<int>("regular")).Result;
 
-            var usuarioRoleResult = _userManager
-                .AddToRoleAsync(usuarioIdentity, "admin").Result;
+            _userManager.AddToRoleAsync(usuarioIdentity, "regular");
 
             if (identityResult.Result.Succeeded)
             {
